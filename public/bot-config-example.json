@@ -1,0 +1,42 @@
+{
+  "name": "Customer Support Bot",
+  "description": "Automated customer support chatbot",
+  "rules": [
+    {
+      "trigger": "hello",
+      "response": "Hello! How can I help you today?",
+      "enabled": true
+    },
+    {
+      "trigger": "help",
+      "response": "You can ask me about:\n1. Product information\n2. Pricing\n3. Support tickets\n\nWhat would you like to know?",
+      "enabled": true
+    },
+    {
+      "trigger": "pricing",
+      "response": "Our plans start from $9/month. Visit our website for more details.",
+      "enabled": true
+    },
+    {
+      "trigger": "bye",
+      "response": "Goodbye! Have a great day!",
+      "enabled": true
+    }
+  ],
+  "settings": {
+    "auto_reply": true,
+    "max_message_length": 1024,
+    "enable_typing_indicator": true,
+    "response_delay_ms": 500,
+    "case_sensitive": false
+  },
+  "contacts": {
+    "admin": "+1234567890",
+    "support": "+0987654321"
+  },
+  "features": {
+    "store_messages": true,
+    "log_interactions": true,
+    "enable_analytics": true
+  }
+}
