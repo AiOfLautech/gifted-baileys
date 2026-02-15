@@ -194,11 +194,11 @@ const steps = [
   },
   {
     title: 'Connect WhatsApp',
-    description: 'Scan the QR code to connect your WhatsApp account',
+    description: 'Scan the QR code to link your WhatsApp account instantly',
   },
   {
-    title: 'Start Automating',
-    description: 'Upload your rules and begin automating responses',
+    title: 'Start Using It',
+    description: 'Configure settings and begin automating your messages right away',
   },
 ]
 

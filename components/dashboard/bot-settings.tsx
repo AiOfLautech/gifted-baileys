@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { FileUpload } from './file-upload'
+import { Switch } from '@/components/ui/switch'
+import { Loader2 } from 'lucide-react'
 
 interface Bot {
   id: string
@@ -17,17 +18,29 @@ interface Bot {
 
 export default function BotSettings({ bot }: { bot: Bot }) {
   const [loading, setLoading] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [formData, setFormData] = useState({
+    name: bot.name,
+    description: bot.description,
+    autoReply: true,
+    greetingMessage: 'Hello! Thanks for contacting us.',
+  })
 
-  const handleUploadConfig = async (file: File) => {
+  const handleSave = async () => {
     setLoading(true)
     try {
-      // Parse and validate the config file
-      const content = await file.text()
-      const config = JSON.parse(content)
-      console.log('[v0] Config uploaded:', config)
-      // TODO: Save config to Supabase
+      const response = await fetch(`/api/bots/${bot.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      
+      if (response.ok) {
+        setSaved(true)
+        setTimeout(() => setSaved(false), 3000)
+      }
     } catch (err) {
-      console.error('[v0] Error parsing config:', err)
+      console.error('[v0] Error saving settings:', err)
     } finally {
       setLoading(false)
     }
@@ -35,33 +48,72 @@ export default function BotSettings({ bot }: { bot: Bot }) {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Bot Configuration</CardTitle>
-          <CardDescription>Update your bot settings and behavior</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Bot Name</Label>
-            <Input id="name" defaultValue={bot.name} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea id="description" defaultValue={bot.description} rows={3} />
-          </div>
-          <Button disabled={loading}>Save Changes</Button>
-        </CardContent>
-      </Card>
+      {saved && (
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+          Settings saved successfully!
+        </div>
+      )}
 
       <Card>
         <CardHeader>
-          <CardTitle>Upload Configuration File</CardTitle>
-          <CardDescription>
-            Upload a JSON file with bot behavior rules and settings
-          </CardDescription>
+          <CardTitle>Bot Configuration</CardTitle>
+          <CardDescription>Customize your bot behavior and responses</CardDescription>
         </CardHeader>
-        <CardContent>
-          <FileUpload onFileSelect={handleUploadConfig} accept=".json" />
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="name">Bot Name</Label>
+            <Input 
+              id="name" 
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea 
+              id="description" 
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={3} 
+              placeholder="What does this bot do?"
+            />
+          </div>
+
+          <div className="border-t pt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>Auto-Reply Enabled</Label>
+                <p className="text-sm text-muted-foreground mt-1">Automatically respond to incoming messages</p>
+              </div>
+              <Switch 
+                checked={formData.autoReply}
+                onCheckedChange={(checked) => setFormData({ ...formData, autoReply: checked })}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="greeting">Greeting Message</Label>
+            <Textarea 
+              id="greeting" 
+              value={formData.greetingMessage}
+              onChange={(e) => setFormData({ ...formData, greetingMessage: e.target.value })}
+              rows={3}
+              placeholder="Message sent when someone first contacts the bot"
+            />
+          </div>
+
+          <Button onClick={handleSave} disabled={loading} className="w-full">
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              'Save Settings'
+            )}
+          </Button>
         </CardContent>
       </Card>
 

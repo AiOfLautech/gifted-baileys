@@ -68,16 +68,35 @@ export default function QRCodeModal({ open, onOpenChange, botId }: QRCodeModalPr
               <div className="flex flex-col items-center gap-2 text-center">
                 <AlertCircle className="h-8 w-8 text-destructive" />
                 <p className="text-sm text-destructive">{error}</p>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-3"
+                  onClick={() => window.location.reload()}
+                >
+                  Try Again
+                </Button>
               </div>
             </div>
+          ) : qrCode ? (
+            <div className="rounded-lg border bg-white p-4 inline-block">
+              <img 
+                src={qrCode} 
+                alt="WhatsApp QR Code" 
+                className="h-64 w-64"
+              />
+              <p className="mt-4 text-center text-xs text-muted-foreground">
+                Scan with your WhatsApp device to connect
+              </p>
+            </div>
           ) : (
-            <div className="flex h-64 w-64 items-center justify-center rounded-lg border-2 border-muted bg-muted p-4">
+            <div className="flex h-64 w-64 items-center justify-center rounded-lg border-2 border-dashed border-muted bg-muted p-4">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-4">
-                  QR code generation requires Baileys integration
+                  QR code will appear once the bot server is running
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  The bot session will be initialized when Baileys is connected
+                  Make sure your Baileys bot instance is connected
                 </p>
               </div>
             </div>
